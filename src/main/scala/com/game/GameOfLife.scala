@@ -9,11 +9,10 @@ class GameOfLife {
   val aliveCells = List()
 
   def applyRules = {
-    worldTmp = world.clone()
+    worldTmp = world.map(_.clone)
     var f: Int = 0
     for (y <- 0 until ySize; x <- 0 until xSize) {
       if (world(x)(y) != null) {
-        println("Alive cell in :" + world(x)(y))
         var aliveNeighbors = verifyLeftTopCornerNeighbor(y, x, 0)
         aliveNeighbors = verifyTopNeighbor(y, x, aliveNeighbors)
         aliveNeighbors = verifyRightTopCornerNeighbor(y, x, aliveNeighbors)
@@ -22,22 +21,24 @@ class GameOfLife {
         aliveNeighbors = verifyBottomNeighbor(y, x, aliveNeighbors)
         aliveNeighbors = verifyLeftBottomCornerNeighbor(y, x, aliveNeighbors)
         aliveNeighbors = verifyLeftNeighbor(y, x, aliveNeighbors)
-
         if (aliveNeighbors != 2 && aliveNeighbors != 3) {
           worldTmp(x)(y) = null
         }
-        println("End verifiaction: aliveNeighbors=" + aliveNeighbors)
       }
     }
+    world = worldTmp.map(_.clone)
+  }
 
-    world = worldTmp.clone()
-    println(world)
-    println(worldTmp)
-    println("**********************")
+  private def printWorl(): Unit = {
+    for (y <- 0 until ySize) {
+      for (x <- 0 until xSize) {
+        print(world(x)(y))
+      }
+      println()
+    }
   }
 
   private def verifyLeftNeighbor(y: Int, x: Int, aliveNeighbors: Int): Int = {
-    println("verifyLeftNeighbor"+aliveNeighbors)
     if (x - 1 > -1 && world(x - 1)(y) != null) {
       aliveNeighbors + 1
     }

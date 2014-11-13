@@ -14,4 +14,4 @@ resolvers ++= Seq("snapshots", "releases").map(Resolver.sonatypeRepo)
 
 resolvers += "bintray" at "http://dl.bintray.com/scalaz/releases"
 
-
+parallelExecution in Test := false

@@ -203,11 +203,14 @@ class GameOfLifeTest extends Specification {
   }
 
   "An alive cell in (0,0)" should {
-    "live if there are two neighbors" in {
+    "live if there are two neighbors: (0,1),(1,0)" in {
       val game = new GameOfLife
       val celulaAevaluar = Celula(Ubicacion(0, 0))
       val neighbor1 = Celula(Ubicacion(0, 1))
       val neighbor2 = Celula(Ubicacion(1, 0))
+      game.setCelula(celulaAevaluar)
+      game.setCelula(neighbor1)
+      game.setCelula(neighbor2)
       game.applyRules
       game.getCelula(Ubicacion(0, 0)) must beEqualTo(celulaAevaluar)
     }
