@@ -2,46 +2,105 @@ package com.game
 
 class GameOfLife {
 
-  val world = Array.ofDim[Celula](3, 3)
+  private val xSize: Int = 3
+  private val ySize: Int = 3
+  var world = Array.ofDim[Celula](xSize, ySize)
+  var worldTmp = Array.ofDim[Celula](xSize, ySize)
   val aliveCells = List()
 
   def applyRules = {
+    worldTmp = world.clone()
+    var f: Int = 0
+    for (y <- 0 until ySize; x <- 0 until xSize) {
+      if (world(x)(y) != null) {
+        println("Alive cell in :" + world(x)(y))
+        var aliveNeighbors = verifyLeftTopCornerNeighbor(y, x, 0)
+        aliveNeighbors = verifyTopNeighbor(y, x, aliveNeighbors)
+        aliveNeighbors = verifyRightTopCornerNeighbor(y, x, aliveNeighbors)
+        aliveNeighbors = verifyRightNeighbor(y, x, aliveNeighbors)
+        aliveNeighbors = verifyRightBottomCornerNeighbor(y, x, aliveNeighbors)
+        aliveNeighbors = verifyBottomNeighbor(y, x, aliveNeighbors)
+        aliveNeighbors = verifyLeftBottomCornerNeighbor(y, x, aliveNeighbors)
+        aliveNeighbors = verifyLeftNeighbor(y, x, aliveNeighbors)
 
-    var aliveNeighbor: Int = 0;
-    if (world(0)(0) != null) {
-      aliveNeighbor += 1
+        if (aliveNeighbors != 2 && aliveNeighbors != 3) {
+          worldTmp(x)(y) = null
+        }
+        println("End verifiaction: aliveNeighbors=" + aliveNeighbors)
+      }
     }
 
-    if (world(1)(0) != null) {
-      aliveNeighbor += 1
-    }
+    world = worldTmp.clone()
+    println(world)
+    println(worldTmp)
+    println("**********************")
+  }
 
-    if (world(2)(0) != null) {
-      aliveNeighbor += 1
+  private def verifyLeftNeighbor(y: Int, x: Int, aliveNeighbors: Int): Int = {
+    println("verifyLeftNeighbor"+aliveNeighbors)
+    if (x - 1 > -1 && world(x - 1)(y) != null) {
+      aliveNeighbors + 1
     }
-
-    if (world(0)(1) != null) {
-      aliveNeighbor += 1
+    else {
+      aliveNeighbors
     }
+  }
 
-    if (world(2)(1) != null) {
-      aliveNeighbor += 1
+  private def verifyLeftBottomCornerNeighbor(y: Int, x: Int, aliveNeighbors: Int): Int = {
+    if (x - 1 > -1 && y + 1 < ySize && world(x - 1)(y + 1) != null) {
+      aliveNeighbors + 1
+    } else {
+      aliveNeighbors
     }
+  }
 
-    if (world(0)(2) != null) {
-      aliveNeighbor += 1
+  private def verifyBottomNeighbor(y: Int, x: Int, aliveNeighbors: Int): Int = {
+    if (y + 1 < ySize && world(x)(y + 1) != null) {
+      aliveNeighbors + 1
     }
-
-    if (world(1)(2) != null) {
-      aliveNeighbor += 1
+    else {
+      aliveNeighbors
     }
+  }
 
-    if (world(2)(2) != null) {
-      aliveNeighbor += 1
+  private def verifyRightBottomCornerNeighbor(y: Int, x: Int, aliveNeighbors: Int): Int = {
+    if (x + 1 < xSize && y + 1 < ySize && world(x + 1)(y + 1) != null) {
+      aliveNeighbors + 1
+    } else {
+      aliveNeighbors
     }
+  }
 
-    if (aliveNeighbor < 2) {
-      world(1)(1) = null
+  private def verifyRightNeighbor(y: Int, x: Int, aliveNeighbors: Int): Int = {
+    if (x + 1 < xSize && world(x + 1)(y) != null) {
+      aliveNeighbors + 1
+    }
+    else {
+      aliveNeighbors
+    }
+  }
+
+  private def verifyRightTopCornerNeighbor(y: Int, x: Int, aliveNeighbors: Int): Int = {
+    if (y - 1 > -1 && x + 1 < xSize && world(x + 1)(y - 1) != null) {
+      aliveNeighbors + 1
+    } else {
+      aliveNeighbors
+    }
+  }
+
+  private def verifyTopNeighbor(y: Int, x: Int, aliveNeighbors: Int): Int = {
+    if (y - 1 > -1 && world(x)(y - 1) != null) {
+      aliveNeighbors + 1
+    } else {
+      aliveNeighbors
+    }
+  }
+
+  private def verifyLeftTopCornerNeighbor(y: Int, x: Int, aliveNeighbors: Int): Int = {
+    if (x - 1 > -1 && y - 1 > -1 && world(x - 1)(y - 1) != null) {
+      aliveNeighbors + 1
+    } else {
+      aliveNeighbors
     }
 
   }

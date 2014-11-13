@@ -4,7 +4,7 @@ import org.specs2.mutable._
 
 class GameOfLifeTest extends Specification {
 
-  "Alive cell in (1,1)" should {
+  "An alive cell in (1,1)" should {
     "die if there isn't alive neighbors" in {
       val game = new GameOfLife
       val celulaAevaluar = Celula(Ubicacion(1, 1))
@@ -122,6 +122,7 @@ class GameOfLifeTest extends Specification {
     }
 
     "live if there is an alive neighbor in (0,1) and another in (2,1)" in {
+      println("live if there is an alive neighbor in (0,1) and another in (2,1)")
       val game = new GameOfLife
       val celulaAevaluar = Celula(Ubicacion(1, 1))
       val neighbor1 = Celula(Ubicacion(0, 1))
@@ -169,6 +170,47 @@ class GameOfLifeTest extends Specification {
       game.getCelula(Ubicacion(1, 1)) must beEqualTo(celulaAevaluar)
     }
 
+    "live if there is three alive neighbors: (0,0), (2,2) and (0,2)" in {
+      val game = new GameOfLife
+      val celulaAevaluar = Celula(Ubicacion(1, 1))
+      val neighbor1 = Celula(Ubicacion(0, 0))
+      val neighbor2 = Celula(Ubicacion(2, 2))
+      val neighbor3 = Celula(Ubicacion(0, 2))
+      game.setCelula(celulaAevaluar)
+      game.setCelula(neighbor1)
+      game.setCelula(neighbor2)
+      game.setCelula(neighbor3)
+      game.applyRules
+      game.getCelula(Ubicacion(1, 1)) must beEqualTo(celulaAevaluar)
+    }
+
+    "die if there is more than three alive neighbors: (0,0), (2,2) , (0,2), (0,1)" in {
+      val game = new GameOfLife
+      val celulaAevaluar = Celula(Ubicacion(1, 1))
+      val neighbor1 = Celula(Ubicacion(0, 0))
+      val neighbor2 = Celula(Ubicacion(2, 2))
+      val neighbor3 = Celula(Ubicacion(0, 2))
+      val neighbor4 = Celula(Ubicacion(0, 1))
+      game.setCelula(celulaAevaluar)
+      game.setCelula(neighbor1)
+      game.setCelula(neighbor2)
+      game.setCelula(neighbor3)
+      game.setCelula(neighbor4)
+      game.applyRules
+      game.getCelula(Ubicacion(1, 1)) must beNull
+    }
+
+  }
+
+  "An alive cell in (0,0)" should {
+    "live if there are two neighbors" in {
+      val game = new GameOfLife
+      val celulaAevaluar = Celula(Ubicacion(0, 0))
+      val neighbor1 = Celula(Ubicacion(0, 1))
+      val neighbor2 = Celula(Ubicacion(1, 0))
+      game.applyRules
+      game.getCelula(Ubicacion(0, 0)) must beEqualTo(celulaAevaluar)
+    }
   }
 
 
