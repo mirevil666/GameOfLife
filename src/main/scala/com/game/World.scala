@@ -14,8 +14,12 @@ case class World(width: Int, height: Int) {
 
   private def traverseWorld {
     for (y <- 0 until height; x <- 0 until width)
-      if (world(x)(y) != null)
+      if (isThereCelula(y, x))
         aliveCellHandler(y, x)
+  }
+
+  def isThereCelula(y: Int, x: Int): Boolean = {
+    world(x)(y) != null
   }
 
   private def aliveCellHandler(y: Int, x: Int) {
@@ -23,7 +27,6 @@ case class World(width: Int, height: Int) {
     neighborCounter.countAliveNeighbors(celula)
     if (celula.numOfNeighbors != 2 && celula.numOfNeighbors != 3)
       worldTmp(x)(y) = null
-
   }
 
   def setCelula(celula: Celula) = {
