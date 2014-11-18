@@ -6,27 +6,56 @@ case class World(width: Int, height: Int) {
   var worldTmp = Array.ofDim[Celula](width, height)
   val neighborCounter = NeighborCounter(this)
 
-  def applyRules = {
-    worldTmp = world.map(_.clone)
-    traverseWorld
-    world = worldTmp.map(_.clone)
+  def applyRules() = {
+    worldTmp = world.map(_.clone())
+    traverseWorld()
+    world = worldTmp.map(_.clone())
   }
 
-  private def traverseWorld {
+
+  private def traverseWorld() {
     for (y <- 0 until height; x <- 0 until width)
-      if (isThereCelula(y, x))
-        aliveCellHandler(y, x)
+      handleCoordinate(y, x)
+  }
+
+  private def handleCoordinate(y: Int, x: Int) {
+    if (isThereCelula(y, x))
+      aliveCellHandler(getCelula(Ubicacion(x, y)))
+    else
+      deadCellHandler(Ubicacion(x, y))
+  }
+
+  private def aliveCellHandler(celula: Celula) {
+    celula.numOfNeighbors = neighborCounter.countAliveNeighbors(celula.ubucacion)
+    applyRulesToAliveCells(celula)
+  }
+
+  private def deadCellHandler(ubicacion: Ubicacion) = {
+    val celula = Celula(ubicacion)
+    celula.numOfNeighbors = neighborCounter.countAliveNeighbors(ubicacion)
+    applyRulesToDeadCells(celula)
+  }
+
+  private def applyRulesToDeadCells(celula: Celula): Unit = {
+    if (celula.numOfNeighbors == 3)
+      worldTmp(celula.ubucacion.x)(celula.ubucacion.y) = celula
+  }
+
+  private def applyRulesToAliveCells(celula: Celula) {
+    if (isUnderPopulation(celula) || isOvercrowding(celula))
+      worldTmp(celula.ubucacion.x)(celula.ubucacion.y) = null
+  }
+
+  private def isOvercrowding(celula: Celula): Boolean = {
+    celula.numOfNeighbors < 2
+  }
+
+  private def isUnderPopulation(celula: Celula): Boolean = {
+    celula.numOfNeighbors > 3
   }
 
   def isThereCelula(y: Int, x: Int): Boolean = {
     world(x)(y) != null
-  }
-
-  private def aliveCellHandler(y: Int, x: Int) {
-    val celula: Celula = world(x)(y)
-    neighborCounter.countAliveNeighbors(celula)
-    if (celula.numOfNeighbors != 2 && celula.numOfNeighbors != 3)
-      worldTmp(x)(y) = null
   }
 
   def setCelula(celula: Celula) = {
