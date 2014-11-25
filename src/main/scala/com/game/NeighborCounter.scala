@@ -55,7 +55,7 @@ case class NeighborCounter(world: World) {
     }
 
 
-    private def verifyLeftBottomCornerNeighbor(y: Int, x: Int, aliveNeighbors: Int): Int = {
+    private def verifyLeftBottomCornerNeighbor(x: Int, y: Int, aliveNeighbors: Int): Int = {
       if (isNotFewerThanTheWorld(x) && haveToCheckBottom(y) && world(x - 1)(y + 1) != null)
         aliveNeighbors + 1
       else

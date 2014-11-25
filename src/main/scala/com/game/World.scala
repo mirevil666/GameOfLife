@@ -15,11 +15,11 @@ case class World(width: Int, height: Int) {
 
   private def traverseWorld() {
     for (y <- 0 until height; x <- 0 until width)
-      handleCoordinate(y, x)
+      handleCoordinate(x, y)
   }
 
-  private def handleCoordinate(y: Int, x: Int) {
-    if (isThereCelula(y, x))
+  private def handleCoordinate(x: Int, y: Int) {
+    if (isThereCelula(x, y))
       aliveCellHandler(getCelula(Ubicacion(x, y)))
     else
       deadCellHandler(Ubicacion(x, y))
@@ -31,14 +31,17 @@ case class World(width: Int, height: Int) {
   }
 
   private def deadCellHandler(ubicacion: Ubicacion) = {
+
     val celula = Celula(ubicacion)
     celula.numOfNeighbors = neighborCounter.countAliveNeighbors(ubicacion)
     applyRulesToDeadCells(celula)
   }
 
   private def applyRulesToDeadCells(celula: Celula): Unit = {
-    if (celula.numOfNeighbors == 3)
+    if (celula.numOfNeighbors == 3) {
       worldTmp(celula.ubucacion.x)(celula.ubucacion.y) = celula
+
+    }
   }
 
   private def applyRulesToAliveCells(celula: Celula) {
@@ -54,7 +57,7 @@ case class World(width: Int, height: Int) {
     celula.numOfNeighbors > 3
   }
 
-  def isThereCelula(y: Int, x: Int): Boolean = {
+  def isThereCelula(x: Int, y: Int): Boolean = {
     world(x)(y) != null
   }
 

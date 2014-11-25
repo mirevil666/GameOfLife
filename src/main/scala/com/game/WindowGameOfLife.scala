@@ -26,23 +26,46 @@ class WindowGameOfLifeLauncher extends Application {
     val width = getParameters.getNamed.get("width").toInt
     val height = getParameters.getNamed.get("height").toInt
     stage.setTitle("GameOfLife")
-    val hBox = new HBox
+    val vBox = new VBox
+
+    val rectArray = Array.ofDim[Rectangle](width, height)
+
+    for (x <- 0 until width) {
+      val hBox = new HBox
+      for (y <- 0 until height) {
+        val rect = new Rectangle(squareSize, squareSize);
+        rect.setFill(Color.WHITE)
+        hBox.getChildren.add(rect)
+        rectArray(x)(y) = rect
+      }
+      vBox.getChildren.add(hBox)
+    }
 
 
-    val rect = new Rectangle(squareSize, squareSize);
-    rect.setFill(Color.RED);
-    hBox.getChildren.add(rect)
 
-
-    val scene = new Scene(hBox, width * squareSize, height * squareSize);
+    val scene = new Scene(vBox, width * squareSize, height * squareSize);
     stage.setScene(scene)
     stage.show()
-    val fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler[ActionEvent]() {
-      var b: Int = 1
+    animateGame(width, height, rectArray)
+  }
 
-      def handle(event: ActionEvent) {
-        rect.setFill(Color.rgb(50, 50, b))
-        b += 10
+  def animateGame(width: Int, height: Int, rectArray: Array[Array[Rectangle]]) {
+    val fiveSecondsWonder = new Timeline(new KeyFrame(Duration.seconds(5), new EventHandler[ActionEvent]() {
+      val gameOfLife = new GameOfLifeImpl(width, height)
+      gameOfLife.world.setCelula(Celula(Ubicacion(0, 0)))
+      gameOfLife.world.setCelula(Celula(Ubicacion(0, 1)))
+      gameOfLife.world.setCelula(Celula(Ubicacion(1, 1)))
+
+      def handle(event: ActionEvent): Unit = {
+        gameOfLife.playGame()
+        for (x <- 0 until width; y <- 0 until height) {
+          if (!gameOfLife.world.isThereCelula(x, y)) {
+            rectArray(x)(y).setFill(Color.WHITE)
+          }
+          else
+            rectArray(x)(y).setFill(Color.BLACK)
+        }
+
       }
     }))
     fiveSecondsWonder.setCycleCount(Animation.INDEFINITE)

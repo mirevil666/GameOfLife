@@ -231,4 +231,19 @@ class GameOfLifeImplTest extends Specification {
     }
   }
 
+  "A dead cell in (1,0)" should {
+    "live if there are three neighbors: (0,0),(0,1),(1,1)" in {
+      val game = new GameOfLifeImpl(3, 3)
+      val celulaAevaluar = Celula(Ubicacion(1, 0))
+      val neighbor1 = Celula(Ubicacion(0, 0))
+      val neighbor2 = Celula(Ubicacion(0, 1))
+      val neighbor3 = Celula(Ubicacion(1, 1))
+      game.world.setCelula(neighbor1)
+      game.world.setCelula(neighbor2)
+      game.world.setCelula(neighbor3)
+      game.playGame
+      game.world.getCelula(Ubicacion(1, 0)) must beEqualTo(celulaAevaluar)
+    }
+  }
+
 }
